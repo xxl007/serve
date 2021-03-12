@@ -484,3 +484,4 @@ def failure_exit(msg):
 
 if __name__ == '__main__':
     benchmark()
+

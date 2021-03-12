@@ -56,6 +56,9 @@ do
           if [ $CUDA_VERSION == "cu110" ];
           then
             BASE_IMAGE="nvidia/cuda:11.0-cudnn8-runtime-ubuntu18.04"
+	  elif [ $CUDA_VERSION == "cu111" ];
+	  then
+	    BASE_IMAGE="nvidia/cuda:11.1.1-cudnn8-runtime-ubuntu18.04"
           elif [ $CUDA_VERSION == "cu102" ];
           then
             BASE_IMAGE="nvidia/cuda:10.2-cudnn7-runtime-ubuntu18.04"
@@ -87,7 +90,8 @@ fi
 
 if [ $BUILD_TYPE == "production" ]
 then
-  DOCKER_BUILDKIT=1 docker build --file Dockerfile --build-arg BASE_IMAGE=$BASE_IMAGE --build-arg CUDA_VERSION=$CUDA_VERSION -t $DOCKER_TAG .
+  DOCKER_BUILDKIT=1 docker build --no-cache --file Dockerfile --build-arg BASE_IMAGE=$BASE_IMAGE --build-arg CUDA_VERSION=$CUDA_VERSION -t $DOCKER_TAG .
 else
-  DOCKER_BUILDKIT=1 docker build --file Dockerfile.dev -t $DOCKER_TAG --build-arg BUILD_TYPE=$BUILD_TYPE --build-arg BASE_IMAGE=$BASE_IMAGE --build-arg BRANCH_NAME=$BRANCH_NAME --build-arg CUDA_VERSION=$CUDA_VERSION --build-arg MACHINE_TYPE=$MACHINE .
+  echo $CUDA_VERSION
+  docker build --no-cache --file Dockerfile.dev -t $DOCKER_TAG --build-arg BUILD_TYPE=$BUILD_TYPE --build-arg BASE_IMAGE=$BASE_IMAGE --build-arg BRANCH_NAME=$BRANCH_NAME --build-arg CUDA_VER=$CUDA_VERSION --build-arg MACHINE_TYPE=$MACHINE .
 fi
