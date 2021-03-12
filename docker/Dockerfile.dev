@@ -53,7 +53,8 @@ ARG CUDA_VER
 RUN if [ "$MACHINE_TYPE" = "gpu" ]; then export USE_CUDA=1; fi \
     && git clone https://github.com/pytorch/serve.git \
     && cd serve \
-    && git checkout ${BRANCH_NAME} \
+    && git fetch --all \
+    && git checkout release_0_4_nsk \
     && if [ -z "$CUDA_VER" ]; then python ts_scripts/install_dependencies.py --environment=dev; else python ts_scripts/install_dependencies.py --environment=dev  --cuda ${CUDA_VER}; fi \
     && python ts_scripts/install_from_src.py \
     && useradd -m model-server \
@@ -62,8 +63,7 @@ RUN if [ "$MACHINE_TYPE" = "gpu" ]; then export USE_CUDA=1; fi \
     && chmod +x /usr/local/bin/dockerd-entrypoint.sh \
     && chown -R model-server /home/model-server \
     && cp docker/config.properties /home/model-server/config.properties \
-    && mkdir /home/model-server/model-store && chown -R model-server /home/model-server/model-store \
-    && pip install -U torch==1.8.0+cu110 -f https://download.pytorch.org/whl/torch_stable.html
+    && mkdir /home/model-server/model-store && chown -R model-server /home/model-server/model-store 
 
 EXPOSE 8080 8081 8082 7070 7071
 USER model-server
